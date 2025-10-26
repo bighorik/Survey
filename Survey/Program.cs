@@ -20,6 +20,10 @@ namespace Survey
             builder.Services.AddFluentMigratorCore().ConfigureRunner(build => build.AddPostgres().WithGlobalConnectionString(connectionString).ScanIn(typeof(InitMigration).Assembly).For.Migrations());
             builder.Services.AddTransient<SurveyRepository>();
 
+            builder.WebHost.UseUrls("http://localhost:5300");
+
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
