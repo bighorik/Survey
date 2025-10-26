@@ -9,7 +9,7 @@ namespace Survey.Persistence
         private readonly string statsSql = @"
                 WITH qmax AS (
                   VALUES
-                    ('question1', 6), ('question2', 6),
+                    ('question1', 9), ('question2', 7),
                     ('question3', 4), ('question4', 4), ('question5', 4),
                     ('question6', 4), ('question7', 4), ('question8', 4),
                     ('question9', 4), ('question10',4), ('question11',4),
