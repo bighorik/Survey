@@ -4,7 +4,7 @@ using Survey.Domain;
 
 namespace Survey.Persistence
 {
-    public class SurveyRepository(NpgsqlDataSource dataSource)
+    public class SurveyRepository
     {
         private readonly string statsSql = @"
                 WITH qmax AS (
@@ -63,11 +63,17 @@ namespace Survey.Persistence
               @opinion, @created_on
             );";
 
+        private readonly NpgsqlDataSource _dataSource;
+        public SurveyRepository(NpgsqlDataSource dataSource)
+        {
+            _dataSource = dataSource;
+        }
+
         public async Task<SurveyStats> GetSurveyStats()
         {
             var result = new Dictionary<int, Dictionary<int, int>>();
 
-            await using var cmd = dataSource.CreateCommand(statsSql);
+            await using var cmd = _dataSource.CreateCommand(statsSql);
             await using var reader = await cmd.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
@@ -96,7 +102,7 @@ namespace Survey.Persistence
 
         public async Task InsertSurvey(SurveyResult result)
         {
-            await using var cmd = dataSource.CreateCommand(insertSql);
+            await using var cmd = _dataSource.CreateCommand(insertSql);
             cmd.Parameters.Add(new NpgsqlParameter("id", NpgsqlDbType.Uuid) { Value = Guid.NewGuid() });
 
             for (int i = 1; i <= 15; i++)

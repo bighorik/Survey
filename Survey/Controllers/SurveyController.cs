@@ -6,18 +6,24 @@ namespace Survey.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class SurveyController(SurveyRepository repository) : ControllerBase
+    public class SurveyController : ControllerBase
     {
+        private readonly SurveyRepository _repository;
+        public SurveyController(SurveyRepository repository)
+        {
+            _repository = repository;
+        }
+
         [HttpGet]
         public Task<SurveyStats> Get()
         {
-            return repository.GetSurveyStats();
+            return _repository.GetSurveyStats();
         }
 
         [HttpPost]
         public Task Get([FromBody] SurveyResult insertation)
         {
-            return repository.InsertSurvey(insertation);
+            return _repository.InsertSurvey(insertation);
         }
     }
 }
