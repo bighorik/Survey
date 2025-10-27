@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Survey.Domain;
 using Survey.Persistence;
@@ -14,12 +15,14 @@ namespace Survey.Controllers
             _repository = repository;
         }
 
+        [EnableCors("AllowAll")]
         [HttpGet]
         public Task<SurveyStats> Get()
         {
             return _repository.GetSurveyStats();
         }
 
+        [EnableCors("AllowAll")]
         [HttpPost]
         public Task Get([FromBody] SurveyResult insertation)
         {

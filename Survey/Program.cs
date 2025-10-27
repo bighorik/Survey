@@ -20,6 +20,14 @@ namespace Survey
             builder.Services.AddFluentMigratorCore().ConfigureRunner(build => build.AddPostgres().WithGlobalConnectionString(connectionString).ScanIn(typeof(InitMigration).Assembly).For.Migrations());
             builder.Services.AddTransient<SurveyRepository>();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", p =>
+                    p.AllowAnyOrigin()
+                     .AllowAnyHeader()
+                     .AllowAnyMethod());
+            });
+
             builder.WebHost.UseUrls("http://localhost:5300");
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -31,6 +39,7 @@ namespace Survey
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 
@@ -39,7 +48,6 @@ namespace Survey
 
             using IServiceScope serviceScope = app.Services.CreateScope();
             serviceScope.ServiceProvider.GetRequiredService<IMigrationRunner>().MigrateUp();
-
             app.Run();
         }
     }
